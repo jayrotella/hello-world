@@ -1,0 +1,26 @@
+---
+title: "Spatially Structured Populations"
+author: "WILD 501"
+output: html_document
+---
+
+We can use a matrix model parameterized with colonization-extinction rates to evaluate the equilibrium proportion of patches occupied for mainland-island scenario for 1 species across many years. Here patches switch between being occupied and being empty. The total population size for patches never changes as patches can't be born or die. But, the state structure changes in that the number of patches in the occupied vs. empty state can change over time based on the vital rates, which are colonization and extinction rates.
+
+```{r}
+library(popbio)
+c=.2; e=.14
+stages=c("occupied","empty")
+A=matrix(c(1-e,c,e,1-c),byrow=T,nrow=2,ncol=2,dimnames=list(stages,stages))
+eigen.analysis(A)
+eigen.analysis(A)$stable.stage
+c/(c+e)
+```
+
+We can project the population's state structure through time given some starting number of occupied and empty sites. Let's try this with a population that starts out with 1 occupied site and 99 empty sites.
+
+```{r}
+n=c(1,99)
+p<-pop.projection(A,n, 15)
+stage.vector.plot(p$stage.vector,prop=F)
+abline(h=c(eigen.analysis(A)$stable.stage)*100)
+```
